@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{%block content%}
+
+{% for post in queryset %}
+<a href="{% url 'webapp:post_detail' post.id %}">
+    <div style="color: blueviolet;">{{post.username}}</div>
+    <div class="post-container" onclick="showDetails('{{ post.image.url }}', '{{ post.description }}')">
+        <img src="{{ post.image.url }}" alt="post_image" srcset="{{ post.image.url }} 320w, {{ post.image.url }} 640w, {{ post.image.url }} 1280w">
+        <p class="post-description">{{ post.description }}</p>
+    </div>
+    </a>
+    {% if post.username == user %}
+
+    <a href="{% url 'webapp:deletephoto' post.id %}" class="btn btn-danger">Delete</a>
+
+    
+    {% endif %}
+{% endfor %}
+
+
+{%endblock%}

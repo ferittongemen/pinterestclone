@@ -1,0 +1,39 @@
+
+
+{% extends "base.html" %}
+{% block content %}
+<div class="post-detail-container">
+    <!-- post_detail.html -->
+    <div class="post-detail-image-container">
+        <h2>{{ post.description }}</h2>
+        <img src="{{ post.image.url }}" alt="{{ post.description }}" class="post-detail-image">
+    </div>
+
+    <div class="post-detail-comments">
+        <h3>Beğeniler: {{ like_count }}</h3>
+        <p>Beğenenler: {{ likers|join:", " }}</p>
+        
+        <!-- Like butonu -->
+        <form method="post" action="{% url 'webapp:like_post' post_id=post.id %}">
+            {% csrf_token %}
+            <button type="submit"><span class="heart">&#x2665;</span> Beğen</button>
+        </form>
+
+        <h3>Yorumlar</h3>
+        {% for comment in comments %}
+            <p>{{ comment.user.username }}: {{ comment.comment }}</p>
+        {% endfor %}
+
+        <!-- Yorum formunu göster -->
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'webapp:post_detail' post_id=post.id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Yorum Yap</button>
+            </form>
+        {% else %}
+            <p>Yorum yapabilmek için giriş yapmalısınız.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock  %}
