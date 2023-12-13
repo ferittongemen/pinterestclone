@@ -137,12 +137,10 @@ def search_profile(request):
 
     
 @login_required(login_url="/login")
-# views.py
 def post_detail(request, post_id):
     post = get_object_or_404(models.WebAppModel, id=post_id)
     comments = post.usercomments_set.all()
 
-    # Beğeni sayısını ve beğenen kullanıcıları al
     like_count = models.Like.like_count(post)
     likers = models.Like.objects.filter(post=post).values_list('user__username', flat=True)
 
@@ -162,18 +160,13 @@ def post_detail(request, post_id):
 def like_post(request, post_id):
     post = get_object_or_404(models.WebAppModel, id=post_id)
 
-    # Kontrol et: Kullanıcı daha önce beğenmiş mi?
     if models.Like.objects.filter(user=request.user, post=post).exists():
-        # Kullanıcı zaten beğenmiş, isteğini geri çevir veya hata mesajı gönder
         pass
     else:
-        # Kullanıcı beğenmediyse, yeni bir Like nesnesi oluştur
         models.Like.objects.create(user=request.user, post=post)
 
-    # Beğeni sayısını hesapla
     like_count = models.Like.like_count(post)
 
-    # post_detail URL'sini al ve like_count parametresini ekleyerek yönlendir
     post_detail_url = reverse('webapp:post_detail', kwargs={'post_id': post_id})
     post_detail_url += f'?like_count={like_count}'
     return redirect(post_detail_url)
